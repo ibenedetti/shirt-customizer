@@ -4,16 +4,14 @@ import { useCustomization } from '../Context/Customization'
 
 export function Model(props) {
   const { nodes, materials } = useGLTF('/3D/shirt.glb')
-  const { color, decal } = useCustomization()
+  const { color, decal, decalPosY, decalScale } = useCustomization()
   
+  // Only load texture when decal exists
   const decalTexture = decal ? useTexture(decal) : null
-
-  if (!decalTexture && decal) {
-    console.warn("Decal texture is not loaded yet, or there was an issue loading the image:", decal);
-  }
 
   return (
     <group {...props} dispose={null}>
+      {/* Front body parts */}
       <mesh geometry={nodes.Object_6.geometry}>
         <meshStandardMaterial color={color} />
       </mesh>
@@ -36,11 +34,11 @@ export function Model(props) {
       
       <mesh geometry={nodes.Object_14.geometry}>
         <meshStandardMaterial color={color} />
-         {decal && decalTexture && (
+                 {decal && decalTexture && (
           <Decal
-            position={[0, 1.3, -0.05]} 
-            rotation={[0, Math.PI, 0]} 
-            scale={0.5}
+            position={[0, decalPosY, -0.05]} 
+            rotation={[0, Math.PI, 0]}
+            scale={decalScale}
             map={decalTexture}
             transparent
           />
@@ -55,6 +53,7 @@ export function Model(props) {
         <meshStandardMaterial color={color} />
       </mesh>
       
+      {/* Sleeves */}
       <mesh geometry={nodes.Object_18.geometry}>
         <meshStandardMaterial color={color} />
       </mesh>
